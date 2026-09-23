@@ -74,9 +74,18 @@
   .quote{font-size:clamp(1.5rem,3vw,2.7rem);letter-spacing:-.035em;line-height:1.2;max-width:850px}
   footer{padding:45px 0 60px;color:#6f7d90;font-size:.85rem}
   .footerin{display:flex;justify-content:space-between;gap:20px}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:38px}
+  .metric{font-size:2rem;font-weight:800;letter-spacing:-.04em;margin-bottom:4px}
+  .timeline{margin-top:40px;border-left:1px solid var(--line);padding-left:25px}
+  .week{position:relative;padding:0 0 30px 18px}
+  .week:before{content:"";position:absolute;left:-30px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px rgba(37,214,162,.35)}
+  .week strong{display:block;margin-bottom:4px}.week span{color:var(--muted);font-size:.88rem}
+  .risk{display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}
+  .risk:last-child{border-bottom:0}.risk b{min-width:145px;font-size:.88rem}.risk span{color:var(--muted);font-size:.87rem}
   @media(max-width:850px){
     .hero{grid-template-columns:1fr;padding-top:65px}.phone{display:none}.grid{grid-template-columns:1fr 1fr}
-    .flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.navlinks{display:none}
+    .flow{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.navlinks{display:none}
   }
   @media(max-width:560px){.grid{grid-template-columns:1fr}.vision{padding:28px}.wrap{width:min(100% - 26px,1120px)}}
 </style>
@@ -86,7 +95,7 @@
   <div class="wrap navin">
     <div class="brand">rajjo<span>.</span></div>
     <div class="navlinks">
-      <a href="#about">About</a><a href="#capabilities">Capabilities</a><a href="#architecture">Architecture</a><a href="#vision">Vision</a>
+      <a href="#about">About</a><a href="#mvp">8-Week MVP</a><a href="#business">Business</a><a href="#validation">Validation</a>
     </div>
   </div>
 </nav>
@@ -96,7 +105,7 @@
     <div>
       <div class="eyebrow"><span class="dot"></span> Personal AI Assistant · Experimental Project</div>
       <h1>Meet <span class="gradient">Rajjo.</span></h1>
-      <p class="lead">An AI assistant built not just to answer questions — but to understand intent, remember context, search the live web, and take real actions across everyday workflows.</p>
+      <p class="lead">A WhatsApp-first AI assistant that turns natural-language requests into a focused set of useful actions: scheduling meetings, handling email workflows, and retrieving live web information.</p>
       <div class="hero-actions">
         <a class="btn primary" href="#capabilities">Explore Rajjo ↓</a>
         <a class="btn" href="#architecture">See how it works</a>
@@ -118,7 +127,7 @@
     <div class="wrap">
       <div class="kicker">The idea</div>
       <h2>From chatbot to action layer.</h2>
-      <p class="section-copy">Rajjo started as an experiment in building a personal assistant that could move beyond conversational AI. The goal: give one natural-language interface the ability to understand a request, retain useful context, access the right tool, ask for confirmation when needed, and execute the task.</p>
+      <p class="section-copy">Rajjo started as an experiment in moving conversational AI from “answering” to “doing.” For the first eight weeks, the scope is intentionally narrow: WhatsApp text/voice input, meeting scheduling, email actions, live web search, lightweight session context, and confirmation before external actions. The goal is not to build a universal assistant in eight weeks — it is to prove that a small set of high-frequency workflows can save users meaningful time.</p>
     </div>
   </section>
 
@@ -133,6 +142,19 @@
         <div class="card"><div class="num">04 / COMMUNICATION</div><h3>Email Actions</h3><p>Structures and prepares email actions, with confirmation before executing sensitive outbound communication.</p></div>
         <div class="card"><div class="num">05 / PRODUCTIVITY</div><h3>Calendar Scheduling</h3><p>Understands dates, times, duration and attendees to turn natural requests into calendar events.</p></div>
         <div class="card"><div class="num">06 / SAFETY</div><h3>Human Confirmation</h3><p>Keeps the user in control by inserting explicit confirmation before selected real-world actions are executed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="mvp">
+    <div class="wrap">
+      <div class="kicker">8-week MVP</div>
+      <h2>Build less. Validate faster.</h2>
+      <p class="section-copy">The first version of Rajjo is deliberately constrained. Advanced autonomy, a standalone Android app, wake-word activation, and broad third-party integrations are outside the eight-week MVP.</p>
+      <div class="twocol">
+        <div class="card"><div class="num">IN SCOPE</div><h3>What gets built</h3><p>WhatsApp text + voice input, three core workflows (calendar, email, live search), lightweight per-user context, explicit action confirmation, basic logs, retries and failure messages.</p></div>
+        <div class="card"><div class="num">NOT YET</div><h3>What waits</h3><p>Android app, wake word, unrestricted agent autonomy, dozens of integrations, complex long-term memory, enterprise administration, and large-scale infrastructure.</p></div>
       </div>
     </div>
   </section>
@@ -165,6 +187,53 @@
     </div>
   </section>
 
+
+  <section id="buildability">
+    <div class="wrap">
+      <div class="kicker">Buildability</div>
+      <h2>Production concerns are part of the MVP.</h2>
+      <p class="section-copy">The eight-week version does not attempt internet-scale architecture. It focuses on a controlled pilot while explicitly addressing the failure modes that matter even at small scale.</p>
+      <div style="margin-top:32px">
+        <div class="risk"><b>Authentication</b><span>Use provider-supported OAuth/token flows and keep credentials isolated from conversational data.</span></div>
+        <div class="risk"><b>API limits</b><span>Track quotas, minimise unnecessary calls, use bounded retries/backoff, and return clear fallback messages when a provider is unavailable.</span></div>
+        <div class="risk"><b>Error handling</b><span>Validate tool inputs before execution, log workflow failures, and never silently claim an action succeeded.</span></div>
+        <div class="risk"><b>Multi-user state</b><span>Key short-lived conversation state by WhatsApp user ID so one user's context cannot leak into another user's session.</span></div>
+        <div class="risk"><b>Confirmation</b><span>Email and calendar actions pass through a confirmation checkpoint before external execution.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="business">
+    <div class="wrap">
+      <div class="kicker">Business model</div>
+      <h2>Start with paying individuals. Learn where the strongest pull is.</h2>
+      <p class="section-copy">The initial hypothesis is a paid productivity assistant for busy students and early-career professionals who already live on WhatsApp and repeatedly switch between search, email and calendar tools. Pricing is a validation hypothesis — not a proven business model yet.</p>
+      <div class="grid">
+        <div class="card"><div class="num">PAYER</div><h3>Individual user</h3><p>Students and young professionals with recurring scheduling, email and information-retrieval workflows.</p></div>
+        <div class="card"><div class="num">PRICING TEST</div><h3>₹199–₹299 / month</h3><p>A simple early-access subscription. The test is whether convenience and time saved are valuable enough for users to pay.</p></div>
+        <div class="card"><div class="num">ACQUISITION</div><h3>Founder-led pilot</h3><p>Recruit the first cohort through campus and professional networks, onboard users directly, observe usage, and use referrals before paid acquisition.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="validation">
+    <div class="wrap">
+      <div class="kicker">Path to first revenue</div>
+      <h2>Eight weeks to a real payment, not an oversized roadmap.</h2>
+      <div class="timeline">
+        <div class="week"><strong>Weeks 1–2 · Narrow the problem</strong><span>Interview target users, identify repeated workflows, lock the three-action MVP, and recruit a small design-partner cohort.</span></div>
+        <div class="week"><strong>Weeks 3–4 · Make the core reliable</strong><span>Stabilise WhatsApp input, calendar, email and search flows. Add confirmations, session isolation, logs, basic retry handling and usage instrumentation.</span></div>
+        <div class="week"><strong>Weeks 5–6 · Controlled pilot</strong><span>Put Rajjo in the hands of a small cohort. Track successful task completion, repeat usage, failures, and which workflow creates the most value.</span></div>
+        <div class="week"><strong>Week 7 · Ask users to pay</strong><span>Offer the most engaged pilot users a ₹199–₹299 early-access plan and capture objections instead of assuming willingness to pay.</span></div>
+        <div class="week"><strong>Week 8 · Revenue checkpoint</strong><span>Target at least one paying user. Review retention signals, API cost per active user, workflow reliability and payment feedback before expanding scope.</span></div>
+      </div>
+      <div class="vision">
+        <div class="metric">First milestone: 1 paying user.</div>
+        <p style="color:#9aa7b7;margin:5px 0 0">Success at this stage means proving somebody values Rajjo enough to pay — not pretending the product is already ready for mass scale.</p>
+      </div>
+    </div>
+  </section>
+
   <section>
     <div class="wrap">
       <div class="kicker">Design philosophy</div>
@@ -179,9 +248,9 @@
 
   <section id="vision">
     <div class="wrap">
-      <div class="kicker">What's next</div>
+      <div class="kicker">Post-validation vision</div>
       <h2>Rajjo beyond WhatsApp.</h2>
-      <p class="section-copy">The next evolution is a standalone mobile assistant with deeper device integration, a wake-word experience and a broader action ecosystem — moving toward an assistant that is available wherever the user needs it.</p>
+      <p class="section-copy">Only after the WhatsApp MVP demonstrates repeat usage and willingness to pay would Rajjo expand toward a standalone mobile assistant, deeper device integration, wake-word interaction and a broader action ecosystem.</p>
       <div class="vision">
         <div class="quote">“Hey Rajjo” → understand what I need, figure out the workflow, and help me get it done.</div>
         <div class="stack">
