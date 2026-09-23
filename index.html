@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajjo — Personal AI Assistant</title>
+<meta name="description" content="Rajjo is a personal AI assistant built to understand, remember, search, and take action across everyday workflows.">
+<style>
+  :root{
+    --bg:#07090d; --panel:#0d1118; --panel2:#111722; --text:#f4f7fb;
+    --muted:#9aa7b7; --line:#202938; --accent:#7c5cff; --accent2:#25d6a2;
+    --glow:rgba(124,92,255,.28);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--text); background:
+      radial-gradient(circle at 75% 10%, rgba(124,92,255,.13), transparent 28%),
+      radial-gradient(circle at 15% 35%, rgba(37,214,162,.07), transparent 25%),
+      var(--bg);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+  nav{
+    position:sticky;top:0;z-index:20;background:rgba(7,9,13,.72);
+    backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)
+  }
+  .navin{height:70px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:800;letter-spacing:-.03em;font-size:1.2rem}
+  .brand span{color:var(--accent2)}
+  .navlinks{display:flex;gap:26px;color:var(--muted);font-size:.92rem}
+  .navlinks a:hover{color:white}
+  .hero{min-height:82vh;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:60px;padding:80px 0}
+  .eyebrow{display:inline-flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:#c8d1dc;font-size:.8rem;background:rgba(255,255,255,.025)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 15px var(--accent2)}
+  h1{font-size:clamp(3.6rem,8vw,7.5rem);line-height:.88;margin:28px 0 25px;letter-spacing:-.075em}
+  h1 .gradient{background:linear-gradient(110deg,#fff 20%,#9e8bff 60%,#36e5b2);-webkit-background-clip:text;color:transparent}
+  .lead{font-size:1.16rem;color:#aab5c3;max-width:680px}
+  .hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+  .btn{padding:12px 18px;border-radius:10px;border:1px solid var(--line);font-weight:650;font-size:.9rem}
+  .btn.primary{background:white;color:#0a0c10;border-color:white}
+  .btn:hover{transform:translateY(-1px)}
+  .phone{
+    width:min(360px,100%);margin:auto;border:1px solid #2a3445;border-radius:34px;padding:12px;
+    background:linear-gradient(160deg,#111722,#090c12);box-shadow:0 30px 90px var(--glow);
+    transform:rotate(2deg)
+  }
+  .screen{min-height:570px;border-radius:25px;background:#090d13;padding:22px;position:relative;overflow:hidden}
+  .screen:before{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:rgba(124,92,255,.15);filter:blur(70px);top:-80px;right:-90px}
+  .status{display:flex;justify-content:space-between;font-size:.72rem;color:#6f7d90}
+  .orb{width:115px;height:115px;border-radius:50%;margin:75px auto 30px;background:radial-gradient(circle at 35% 30%,#fff 0 3%,#9d89ff 18%,#6947ff 48%,#162032 75%);box-shadow:0 0 55px rgba(124,92,255,.45)}
+  .hello{text-align:center;font-size:1.5rem;font-weight:750}
+  .sub{text-align:center;color:#78879a;font-size:.86rem;margin-top:6px}
+  .bubble{margin-top:50px;border:1px solid #1d2735;background:#0e141d;padding:14px 16px;border-radius:16px;color:#c6d0dc;font-size:.85rem}
+  .action{margin-top:10px;border:1px solid rgba(37,214,162,.25);background:rgba(37,214,162,.06);padding:12px 14px;border-radius:14px;color:#aeeedb;font-size:.82rem}
+  section{padding:95px 0;border-top:1px solid rgba(255,255,255,.055)}
+  .kicker{color:var(--accent2);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:.73rem}
+  h2{font-size:clamp(2rem,4vw,3.6rem);line-height:1.05;letter-spacing:-.045em;margin:13px 0 18px;max-width:760px}
+  .section-copy{color:var(--muted);max-width:720px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:45px}
+  .card{background:linear-gradient(145deg,rgba(17,23,34,.9),rgba(10,14,20,.9));border:1px solid var(--line);border-radius:18px;padding:25px;min-height:220px}
+  .card .num{color:#647084;font-size:.78rem;margin-bottom:45px}
+  .card h3{font-size:1.1rem;margin:0 0 8px}
+  .card p{color:#8d9aaa;font-size:.88rem;margin:0}
+  .flow{margin-top:45px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:center}
+  .flowbox{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;text-align:center;min-height:100px;display:flex;flex-direction:column;justify-content:center}
+  .flowbox strong{font-size:.86rem}.flowbox small{color:#758397;margin-top:4px}
+  .arrow{text-align:center;color:#4e5a6c}
+  .stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+  .pill{border:1px solid var(--line);background:#0c1119;padding:9px 13px;border-radius:999px;color:#b5c0ce;font-size:.83rem}
+  .vision{background:linear-gradient(135deg,rgba(124,92,255,.13),rgba(37,214,162,.05));border:1px solid #273044;border-radius:24px;padding:50px;margin-top:40px}
+  .quote{font-size:clamp(1.5rem,3vw,2.7rem);letter-spacing:-.035em;line-height:1.2;max-width:850px}
+  footer{padding:45px 0 60px;color:#6f7d90;font-size:.85rem}
+  .footerin{display:flex;justify-content:space-between;gap:20px}
+  @media(max-width:850px){
+    .hero{grid-template-columns:1fr;padding-top:65px}.phone{display:none}.grid{grid-template-columns:1fr 1fr}
+    .flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.navlinks{display:none}
+  }
+  @media(max-width:560px){.grid{grid-template-columns:1fr}.vision{padding:28px}.wrap{width:min(100% - 26px,1120px)}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap navin">
+    <div class="brand">rajjo<span>.</span></div>
+    <div class="navlinks">
+      <a href="#about">About</a><a href="#capabilities">Capabilities</a><a href="#architecture">Architecture</a><a href="#vision">Vision</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Personal AI Assistant · Experimental Project</div>
+      <h1>Meet <span class="gradient">Rajjo.</span></h1>
+      <p class="lead">An AI assistant built not just to answer questions — but to understand intent, remember context, search the live web, and take real actions across everyday workflows.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#capabilities">Explore Rajjo ↓</a>
+        <a class="btn" href="#architecture">See how it works</a>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="screen">
+        <div class="status"><span>RAJJO</span><span>● ONLINE</span></div>
+        <div class="orb"></div>
+        <div class="hello">What can I do for you?</div>
+        <div class="sub">Speak naturally. Rajjo handles the rest.</div>
+        <div class="bubble">“Schedule a call tomorrow at 4 PM and email the details.”</div>
+        <div class="action">✓ Intent understood · Awaiting confirmation</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="kicker">The idea</div>
+      <h2>From chatbot to action layer.</h2>
+      <p class="section-copy">Rajjo started as an experiment in building a personal assistant that could move beyond conversational AI. The goal: give one natural-language interface the ability to understand a request, retain useful context, access the right tool, ask for confirmation when needed, and execute the task.</p>
+    </div>
+  </section>
+
+  <section id="capabilities">
+    <div class="wrap">
+      <div class="kicker">Capabilities</div>
+      <h2>One conversation. Multiple tools.</h2>
+      <div class="grid">
+        <div class="card"><div class="num">01 / INPUT</div><h3>Text + Voice</h3><p>Accepts conversational requests through WhatsApp, including voice notes converted into actionable instructions.</p></div>
+        <div class="card"><div class="num">02 / CONTEXT</div><h3>Conversational Memory</h3><p>Maintains context so follow-up instructions can build naturally on what was discussed before.</p></div>
+        <div class="card"><div class="num">03 / SEARCH</div><h3>Live Web Search</h3><p>Routes time-sensitive questions to live search instead of relying only on static model knowledge.</p></div>
+        <div class="card"><div class="num">04 / COMMUNICATION</div><h3>Email Actions</h3><p>Structures and prepares email actions, with confirmation before executing sensitive outbound communication.</p></div>
+        <div class="card"><div class="num">05 / PRODUCTIVITY</div><h3>Calendar Scheduling</h3><p>Understands dates, times, duration and attendees to turn natural requests into calendar events.</p></div>
+        <div class="card"><div class="num">06 / SAFETY</div><h3>Human Confirmation</h3><p>Keeps the user in control by inserting explicit confirmation before selected real-world actions are executed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="wrap">
+      <div class="kicker">Architecture</div>
+      <h2>Listen → understand → decide → act.</h2>
+      <p class="section-copy">Rajjo is designed around an intelligence and action architecture. Incoming requests are interpreted, enriched with context, and passed to an Action Engine that selects and orchestrates the right workflow across connected tools and services.</p>
+      <div class="flow">
+        <div class="flowbox"><strong>WhatsApp</strong><small>Text / Audio</small></div>
+        <div class="arrow">→</div>
+        <div class="flowbox"><strong>Action Engine</strong><small>Workflow Orchestration</small></div>
+        <div class="arrow">→</div>
+        <div class="flowbox"><strong>AI Layer</strong><small>Intent + Context</small></div>
+      </div>
+      <div class="flow" style="margin-top:8px">
+        <div class="flowbox"><strong>Live Search</strong><small>Web intelligence</small></div>
+        <div class="flowbox"><strong>Gmail</strong><small>Communication</small></div>
+        <div class="flowbox"><strong>Calendar</strong><small>Scheduling</small></div>
+        <div class="flowbox"><strong>Memory</strong><small>Context</small></div>
+        <div class="flowbox"><strong>Confirmation</strong><small>User control</small></div>
+      </div>
+      <div class="stack">
+        <span class="pill">Action Engine</span><span class="pill">WhatsApp Cloud API</span><span class="pill">LLMs</span>
+        <span class="pill">Speech-to-Text</span><span class="pill">Gmail</span><span class="pill">Google Calendar</span>
+        <span class="pill">Live Search APIs</span><span class="pill">Workflow Memory</span>
+      </div>
+      <p style="margin-top:20px;color:#657386;font-size:.78rem;">Implementation stack · Workflow orchestration powered by n8n Cloud.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="kicker">Design philosophy</div>
+      <h2>Useful AI should reduce steps, not add another app to manage.</h2>
+      <div class="grid">
+        <div class="card"><div class="num">A</div><h3>Natural first</h3><p>Users describe the outcome they want instead of learning commands, menus or rigid syntax.</p></div>
+        <div class="card"><div class="num">B</div><h3>Action oriented</h3><p>The conversation is only the interface. The real value comes from connecting intent to execution.</p></div>
+        <div class="card"><div class="num">C</div><h3>Control by design</h3><p>Autonomy is paired with checkpoints so consequential actions remain visible and deliberate.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vision">
+    <div class="wrap">
+      <div class="kicker">What's next</div>
+      <h2>Rajjo beyond WhatsApp.</h2>
+      <p class="section-copy">The next evolution is a standalone mobile assistant with deeper device integration, a wake-word experience and a broader action ecosystem — moving toward an assistant that is available wherever the user needs it.</p>
+      <div class="vision">
+        <div class="quote">“Hey Rajjo” → understand what I need, figure out the workflow, and help me get it done.</div>
+        <div class="stack">
+          <span class="pill">Android App</span><span class="pill">Wake Word</span><span class="pill">More Integrations</span><span class="pill">Greater Autonomy</span><span class="pill">Cross-platform</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footerin">
+    <span>Rajjo · Personal AI Assistant</span>
+    <span>Built as an experiment in agentic AI & workflow automation.</span>
+  </div>
+</footer>
+</body>
+</html>
